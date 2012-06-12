@@ -1,26 +1,23 @@
 require 'yaml'
-  
+
 class ReekYamlFile
   def initialize(path)
     @path = path
-    unless File.exist?(@path) : raise "no such file or directory" end
     file_load
-    unless file_yaml? : raise "input file is not YAML format" end
-    unless file_reek_output? : raise "input file is not reek output" end
   end
 
   def to_reeks; @content; end
-  
+
 private
   def file_load; File::open(@path) {|f| @content = YAML.load(f) }; end
 
   def file_yaml?; @content != false; end
-  
+
   def file_reek_output?; @content.first.class == Reek::SmellWarning; end
 end
 
 class ReeksList
-  attr_reader :divide_reeks
+  attr_reader :divide_reeks, :raw_reeks
   def initialize(input_file_path)
     @raw_reeks = ReekYamlFile.new(input_file_path).to_reeks
     @divide_reeks = []
